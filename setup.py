@@ -14,6 +14,9 @@ from torch.utils.cpp_extension import CUDAExtension, BuildExtension
 import os
 os.path.dirname(os.path.abspath(__file__))
 
+# 默认值
+language_feature = int(os.getenv('language_feature_hiddendim', 3))  # 默认值为3
+print("Dim of language_feature is: ",language_feature)    
 setup(
     name="diff_gaussian_rasterization",
     packages=['diff_gaussian_rasterization'],
@@ -26,6 +29,7 @@ setup(
             "cuda_rasterizer/backward.cu",
             "rasterize_points.cu",
             "ext.cpp"],
+            define_macros=[('NUM_CHANNELS_language_feature', language_feature)],
             extra_compile_args={"nvcc": ["-I" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/glm/")]})
         ],
     cmdclass={
